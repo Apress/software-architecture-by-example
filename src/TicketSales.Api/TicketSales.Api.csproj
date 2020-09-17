@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>TicketSales.Api</RootNamespace>
+    <UserSecretsId>36bd66a3-8d00-4fc7-9520-533c6fe7fbbf</UserSecretsId>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TicketSales.ServiceBusHelper\TicketSales.ServiceBusHelper.csproj" />
+  </ItemGroup>
+
+</Project>

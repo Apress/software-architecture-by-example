@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>TicketSales.MockClient</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>9b603669-dc43-4296-aa4a-55e0fcedd281</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.8" />
+    <PackageReference Include="microsoft.extensions.configuration.fileextensions" Version="3.1.8" />
+    <PackageReference Include="microsoft.extensions.configuration.json" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.0" />
+    <PackageReference Include="microsoft.extensions.dependencyinjection" Version="3.1.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TicketSales.Common\TicketSales.Common.csproj" />
+    <ProjectReference Include="..\TicketSales.ServiceBusHelper\TicketSales.ServiceBusHelper.csproj" />
+  </ItemGroup>
+
+</Project>
