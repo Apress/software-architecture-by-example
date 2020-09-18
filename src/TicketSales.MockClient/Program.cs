@@ -18,13 +18,18 @@ namespace TicketSales.MockClient
     {
         static HttpClient client = new HttpClient();        
         static string _ticketSalesApiPath = "https://localhost:5101/ticketorder";
-        static Random _rnd = new Random();        
+        static Random _rnd = new Random();
+        static ConsoleHelper _consoleHelper;
+        static ConsoleLogger _consoleLogger;
 
         static async Task Main(string[] args)
         {
+            _consoleHelper = new ConsoleHelper("Mock Client", ConsoleColor.Cyan);
+            _consoleLogger = new ConsoleLogger(_consoleHelper);
+
             while (true)
             {
-                var result = ConsoleHelper.GetKeyPress("What would you like to do?",
+                var result = _consoleHelper.GetKeyPress("What would you like to do?",
                     new string[] {
                     "1 - Place Order",
                     "2 - Get Ticket Availability"
@@ -35,7 +40,7 @@ namespace TicketSales.MockClient
                     case '1':
                         await CallServiceBusPlaceOrder(
                             GetServiceBusConfiguration(),
-                            new ConsoleLogger());
+                            _consoleLogger);
                         break;
 
                     case '2':
@@ -43,7 +48,6 @@ namespace TicketSales.MockClient
                         break;
 
                 }
-
             }
         }
 
@@ -71,17 +75,17 @@ namespace TicketSales.MockClient
 
             var messageResult = await serviceBusHelper.SendMessageAwaitReply(
                 JsonConvert.SerializeObject(ticketInformation));
-            ConsoleHelper.OutputString(messageResult);
+            _consoleHelper.OutputString(messageResult);
         }
 
         private static async Task TestTicketSalesApi()
         {
-            ConsoleHelper.OutputTime();
+            _consoleHelper.OutputTime();
 
             TicketInformation ticketInformation = CreateTestTicketInformation();
             var result = await CallOrderTicket(ticketInformation);
 
-            ConsoleHelper.OutputTime();
+            _consoleHelper.OutputTime();
         }
 
         private static TicketInformation CreateTestTicketInformation() =>        

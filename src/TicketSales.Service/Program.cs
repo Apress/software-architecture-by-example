@@ -17,25 +17,30 @@ namespace TicketSales.Service
         private static ServiceBusConfiguration _serviceBusConfiguration;
         private static string _ticketSalesApiEndpoint;
         private static HttpClient _httpClient;
+        private static IQueueHelper _queueHelper;
+        private static Guid _clientId = Guid.NewGuid();
+        private static ConsoleHelper _consoleHelper;
+        private static ConsoleLogger _consoleLogger;
 
         static void Main(string[] args)
         {
             ReadConfiguration();
             _httpClient = new HttpClient();
+            _consoleHelper = new ConsoleHelper("Service", ConsoleColor.Yellow);
             
-            var queueHelper = new QueueHelper(
+            _queueHelper = new QueueHelper(
                 _serviceBusConfiguration, 
-                new ConsoleLogger());
+                _consoleLogger);
 
-            queueHelper.Listen(onMessageReceived, false);
+            _queueHelper.Listen(onMessageReceived, false);
 
-            ConsoleHelper.AwaitKeyPress("Please press any key to exit");
+            _consoleHelper.AwaitKeyPress("Please press any key to exit");
         }
 
         private static async Task onMessageReceived(Message message, CancellationToken cancellationToken)
         {
             var messageBody = Encoding.UTF8.GetString(message.Body, 0, message.Body.Length);
-            ConsoleHelper.OutputString($"Correlation Id: {message.CorrelationId} Message: {messageBody}");
+            _consoleHelper.OutputString($"Correlation Id: {message.CorrelationId} Message: {messageBody}");
 
             // Deserialise and serialise because these objects are held separately
             var ticketInformation = JsonConvert.DeserializeObject<TicketInformation>(messageBody);
@@ -43,6 +48,14 @@ namespace TicketSales.Service
             bool result = await CallOrderTicket(ticketInformation);
 
             // Put a message back on the queue to indicate the result
+            var response = new TicketCreationResponse()
+            {
+                IsSuccess = result
+            };
+            await _queueHelper.AddNewMessage(
+                JsonConvert.SerializeObject(response), 
+                _clientId.ToString(), 
+                message.CorrelationId);            
         }
 
         private static async Task<bool> CallOrderTicket(TicketInformation ticketInformation)
@@ -60,6 +73,7 @@ namespace TicketSales.Service
         {
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", true, true)
+                .AddUserSecrets<Program>()
                 .Build();
 
             _serviceBusConfiguration = new ServiceBusConfiguration()

@@ -6,14 +6,21 @@ namespace TicketSales.Common
 {
     public class ConsoleLogger : ILogger
     {
+        private readonly ConsoleHelper _consoleHelper;
+
+        public ConsoleLogger(ConsoleHelper consoleHelper)
+        {
+            _consoleHelper = consoleHelper;
+        }
+
         public void Log(string message)
         {
-            ConsoleHelper.OutputString(message);
+            _consoleHelper.OutputString(message);
         }
 
         public void LogError(Exception exception)
         {
-            ConsoleHelper.OutputWarning(exception.Message);
+            _consoleHelper.OutputWarning(exception.Message);
         }
     }
 }

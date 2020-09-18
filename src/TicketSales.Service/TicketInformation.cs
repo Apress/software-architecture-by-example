@@ -12,7 +12,7 @@ namespace TicketSales.Service
 
         public string? SeatCode { get; set; }
 
-        public int Quantity { get; set; }
+        public int Quantity { get; set; }        
 
     }
 }

@@ -2,39 +2,64 @@ using System;
 
 namespace TicketSales.Common
 {
-    public static class ConsoleHelper
+    public class ConsoleHelper
     {
-        public static void OutputTime()
+        private readonly string _id;
+        private readonly ConsoleColor _consoleColor;
+
+        public ConsoleHelper(string id, ConsoleColor consoleColor)
         {
+            _id = id;
+            _consoleColor = consoleColor;
+        }
+
+        public void OutputTime()
+        {
+            OutputId();
+
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine($"Date Stamp: {DateTime.Now}");
             Console.ResetColor();
         }
 
-        public static void OutputString(string message)
+        private void OutputId()
         {
+            Console.ForegroundColor = _consoleColor;
+            Console.Write($"{_id} : ");
+        }
+
+        public void OutputString(string message)
+        {
+            OutputId();
+
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine($"{DateTime.Now}: {message}");
             Console.ResetColor();
         }
 
-        public static void OutputWarning(string message)
+        public void OutputWarning(string message)
         {
+            OutputId();
+
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"{DateTime.Now}: {message}");
             Console.ResetColor();
         }
 
-        public static void AwaitKeyPress(string prompt = "Please press any key to continue")
+        public void AwaitKeyPress(string prompt = "Please press any key to continue")
         {
+            OutputId();
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(prompt);
             Console.ReadKey();
             Console.ResetColor();
         }
 
-        public static ConsoleKeyInfo GetKeyPress(string mainPrompt, string[] prompts)
+        public ConsoleKeyInfo GetKeyPress(string mainPrompt, string[] prompts)
         {
+            OutputId();
+
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(mainPrompt);
 

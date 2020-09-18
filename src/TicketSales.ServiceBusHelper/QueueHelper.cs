@@ -25,11 +25,11 @@ namespace TicketSales.ServiceBusHelper
             _logger = logger;
         }
 
-        public async Task<string> AddNewMessage(string messageBody, string clientId)
+        public async Task<string> AddNewMessage(string messageBody, string clientId, string correlationId = "")
         {            
             var message = new Message(Encoding.UTF8.GetBytes(messageBody))
             {
-                CorrelationId = Guid.NewGuid().ToString(),
+                CorrelationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId,
                 ReplyTo = clientId
             };
                        
