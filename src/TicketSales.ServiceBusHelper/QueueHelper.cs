@@ -9,53 +9,64 @@ using TicketSales.Common;
 namespace TicketSales.ServiceBusHelper
 {
     public class QueueHelper : IQueueHelper, IAsyncDisposable
-    {
-        private readonly string _connectionString;
-        private readonly string _queueName;
-        private readonly IQueueClient _queueClient;
+    {                
+        private readonly IQueueClient _responseQueueClient;
+        private readonly IQueueClient _sendQueueClient;
 
         private readonly ILogger _logger;
 
         public QueueHelper(ServiceBusConfiguration serviceBusConfiguration,
             ILogger logger)
-        {
-            _connectionString = serviceBusConfiguration.ConnectionString;
-            _queueName = serviceBusConfiguration.QueueName;
-            _queueClient = new QueueClient(_connectionString, _queueName);
+        {                        
+            _sendQueueClient = new QueueClient(
+                serviceBusConfiguration.ConnectionString, serviceBusConfiguration.QueueName);
+            _responseQueueClient = new QueueClient(
+                serviceBusConfiguration.ConnectionString, serviceBusConfiguration.ResponseQueueName);
             _logger = logger;
         }
 
-        public async Task<string> AddNewMessage(string messageBody, string clientId, string correlationId = "")
+        public async Task<string> AddNewMessage(string messageBody, string correlationId = "")
         {            
             var message = new Message(Encoding.UTF8.GetBytes(messageBody))
             {
-                CorrelationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId,
-                ReplyTo = clientId
+                CorrelationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId,                
             };
                        
-            await _queueClient.SendAsync(message);
+            await _sendQueueClient.SendAsync(message);
 
-            _logger.Log($"AddNewMessage: {message.CorrelationId}, Client: {clientId}");
+            _logger.Log($"AddNewMessage: {message.CorrelationId}");
+
+            return message.CorrelationId;
+        }
+
+        public async Task<string> AddResponseMessage(string messageBody, string correlationId = "")
+        {
+            var message = new Message(Encoding.UTF8.GetBytes(messageBody))
+            {
+                CorrelationId = string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString() : correlationId                
+            };
+
+            await _responseQueueClient.SendAsync(message);
+
+            _logger.Log($"AddResponseMessage: {message.CorrelationId}");
 
             return message.CorrelationId;
         }
 
         public async Task<string> SendMessageAwaitReply(string messageBody)
         {
-            string clientId = Guid.NewGuid().ToString();
-
-            var correlationId = await AddNewMessage(messageBody, clientId);
-            var result = await GetMessageByCorrelationId(correlationId, clientId);
+            var correlationId = await AddNewMessage(messageBody);
+            var result = await GetMessageByCorrelationId(correlationId);
 
             return result;
         }
 
         public async ValueTask DisposeAsync()
         {
-            await _queueClient.CloseAsync();
+            await _sendQueueClient.CloseAsync();
         }
 
-        public async Task<string> GetMessageByCorrelationId(string correlationId, string clientFilter)
+        public async Task<string> GetMessageByCorrelationId(string correlationId)
         {
             _logger.Log($"GetMessageByCorrelationId: {correlationId}");
 
@@ -67,22 +78,22 @@ namespace TicketSales.ServiceBusHelper
                 AutoComplete = false                
             };
 
-            _queueClient.RegisterMessageHandler(async (message, cancellationToken) =>
+            _responseQueueClient.RegisterMessageHandler(async (message, cancellationToken) =>
             {
                 _logger.Log($"Received Message: {message.CorrelationId}, To: {message.To}, ReplyTo: {message.ReplyTo}");
-                if (message.CorrelationId == correlationId && message.To == clientFilter)
+                if (message.CorrelationId == correlationId)
                 {                    
                     returnMessageBody = Encoding.UTF8.GetString(message.Body, 0, message.Body.Length);
 
-                    _logger.Log($"Received Message: {returnMessageBody}, Client: {clientFilter}");
+                    _logger.Log($"Received Message: {returnMessageBody}");
 
                     tcs.TrySetResult(message);
-                    await _queueClient.CompleteAsync(message.SystemProperties.LockToken);
+                    await _sendQueueClient.CompleteAsync(message.SystemProperties.LockToken);
                 } 
                 else
                 { 
-                    tcs.TrySetResult(null);
-                    await _queueClient.AbandonAsync(message.SystemProperties.LockToken);                  
+                    //tcs.TrySetResult(null);
+                    await _sendQueueClient.AbandonAsync(message.SystemProperties.LockToken);                  
                 }
             }, messageHandlerOptions);
 
@@ -109,8 +120,12 @@ namespace TicketSales.ServiceBusHelper
                 AutoComplete = autoComplete
             };
 
-            _queueClient.RegisterMessageHandler(onMessageReceived, messageHandlerOptions);
+            _sendQueueClient.RegisterMessageHandler(onMessageReceived, messageHandlerOptions);
         }
 
+        public async Task CompleteReceivedMessage(Message message)
+        {
+            await _sendQueueClient.CompleteAsync(message.SystemProperties.LockToken);
+        }
     }
 }

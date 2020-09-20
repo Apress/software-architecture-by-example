@@ -7,11 +7,13 @@ namespace TicketSales.ServiceBusHelper
 {
     public interface IQueueHelper
     {
-        Task<string> AddNewMessage(string messageBody, string clientId, string correlationId = "");
-        Task<string> GetMessageByCorrelationId(string correlationId, string clientFilter);
+        Task<string> AddNewMessage(string messageBody, string correlationId = "");
+        Task<string> AddResponseMessage(string messageBody, string correlationId = "");
+        Task<string> GetMessageByCorrelationId(string correlationId);
         Task<string> SendMessageAwaitReply(string messageBody);
         void Listen(
             Func<Message, CancellationToken, Task> onMessageReceived,
             bool autoComplete);
+        Task CompleteReceivedMessage(Message message);
     }
 }

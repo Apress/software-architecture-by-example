@@ -60,8 +60,9 @@ namespace TicketSales.MockClient
 
             return new ServiceBusConfiguration()
             {
-                ConnectionString = configuration.GetValue<string>("ServiceBus:ConnectionString"),
-                QueueName = configuration.GetValue<string>("ServiceBus:QueueName")
+                ConnectionString = configuration.GetValue<string>("ServiceBus:ConnectionString"),                
+                QueueName = configuration.GetValue<string>("ServiceBus:QueueName"),
+                ResponseQueueName = configuration.GetValue<string>("ServiceBus:ResponseQueueName")
             };
         }
 

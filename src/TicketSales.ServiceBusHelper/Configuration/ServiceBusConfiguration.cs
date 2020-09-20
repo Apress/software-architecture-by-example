@@ -9,5 +9,6 @@ namespace TicketSales.ServiceBusHelper
     {
         public string ConnectionString { get; set; }
         public string QueueName { get; set; }
+        public string ResponseQueueName { get; set; }
     }
 }

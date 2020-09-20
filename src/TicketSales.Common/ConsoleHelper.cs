@@ -25,7 +25,7 @@ namespace TicketSales.Common
         private void OutputId()
         {
             Console.ForegroundColor = _consoleColor;
-            Console.Write($"{_id} : ");
+            Console.Write($"({_id}) : ");
         }
 
         public void OutputString(string message)

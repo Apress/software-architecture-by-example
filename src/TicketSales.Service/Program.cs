@@ -27,6 +27,7 @@ namespace TicketSales.Service
             ReadConfiguration();
             _httpClient = new HttpClient();
             _consoleHelper = new ConsoleHelper("Service", ConsoleColor.Yellow);
+            _consoleLogger = new ConsoleLogger(_consoleHelper);
             
             _queueHelper = new QueueHelper(
                 _serviceBusConfiguration, 
@@ -52,10 +53,11 @@ namespace TicketSales.Service
             {
                 IsSuccess = result
             };
-            await _queueHelper.AddNewMessage(
-                JsonConvert.SerializeObject(response), 
-                _clientId.ToString(), 
-                message.CorrelationId);            
+            await _queueHelper.AddResponseMessage(
+                JsonConvert.SerializeObject(response),                 
+                message.CorrelationId);
+
+            await _queueHelper.CompleteReceivedMessage(message);
         }
 
         private static async Task<bool> CallOrderTicket(TicketInformation ticketInformation)
@@ -79,7 +81,8 @@ namespace TicketSales.Service
             _serviceBusConfiguration = new ServiceBusConfiguration()
             {
                 ConnectionString = configuration.GetValue<string>("ServiceBus:ConnectionString"),
-                QueueName = configuration.GetValue<string>("ServiceBus:QueueName")
+                QueueName = configuration.GetValue<string>("ServiceBus:QueueName"),
+                ResponseQueueName = configuration.GetValue<string>("ServiceBus:ResponseQueueName")
             };
 
             _ticketSalesApiEndpoint = configuration.GetValue<string>("TicketSalesApiEndpoint");

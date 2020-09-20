@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using TicketSales.Api.Configuration;
 using TicketSales.Common;
 using TicketSales.ServiceBusHelper;
@@ -36,6 +37,10 @@ namespace TicketSales.Api
 
             services.AddScoped<IQueueHelper, QueueHelper>();
             services.AddScoped<ILogger, ConsoleLogger>();
+            services.AddScoped<ConsoleHelper>((a) =>
+            {
+                return new ConsoleHelper("Api", ConsoleColor.White);
+            });
 
             services.AddHttpClient();
         }
