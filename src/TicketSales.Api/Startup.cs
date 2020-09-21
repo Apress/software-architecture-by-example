@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -56,6 +57,12 @@ namespace TicketSales.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.Use(next => context =>
+            {
+                Console.WriteLine($"Found: {context.GetEndpoint()?.DisplayName}");
+                return next(context);
+            });
 
             app.UseAuthorization();
 

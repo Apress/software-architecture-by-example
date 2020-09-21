@@ -19,9 +19,13 @@ namespace TicketSales.ServiceBusHelper
             ILogger logger)
         {                        
             _sendQueueClient = new QueueClient(
-                serviceBusConfiguration.ConnectionString, serviceBusConfiguration.QueueName);
+                serviceBusConfiguration.ConnectionString, 
+                serviceBusConfiguration.QueueName,
+                ReceiveMode.PeekLock);
             _responseQueueClient = new QueueClient(
-                serviceBusConfiguration.ConnectionString, serviceBusConfiguration.ResponseQueueName);
+                serviceBusConfiguration.ConnectionString, 
+                serviceBusConfiguration.ResponseQueueName, 
+                ReceiveMode.PeekLock);
             _logger = logger;
         }
 
@@ -83,21 +87,20 @@ namespace TicketSales.ServiceBusHelper
                 _logger.Log($"Received Message: {message.CorrelationId}, To: {message.To}, ReplyTo: {message.ReplyTo}");
                 if (message.CorrelationId == correlationId)
                 {                    
-                    returnMessageBody = Encoding.UTF8.GetString(message.Body, 0, message.Body.Length);
-
-                    _logger.Log($"Received Message: {returnMessageBody}");
+                    returnMessageBody = Encoding.UTF8.GetString(message.Body, 0, message.Body.Length);                    
+                    
+                    await _responseQueueClient.CompleteAsync(message.SystemProperties.LockToken);
+                    _logger.Log($"Accepted Message: {returnMessageBody}");
 
                     tcs.TrySetResult(message);
-                    await _sendQueueClient.CompleteAsync(message.SystemProperties.LockToken);
                 } 
                 else
-                { 
-                    //tcs.TrySetResult(null);
-                    await _sendQueueClient.AbandonAsync(message.SystemProperties.LockToken);                  
+                {
+                    await _responseQueueClient.AbandonAsync(message.SystemProperties.LockToken);
                 }
             }, messageHandlerOptions);
 
-            await tcs.Task;
+            await tcs.Task;            
             return returnMessageBody;
         }
 

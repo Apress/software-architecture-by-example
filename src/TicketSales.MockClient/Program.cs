@@ -32,7 +32,8 @@ namespace TicketSales.MockClient
                 var result = _consoleHelper.GetKeyPress("What would you like to do?",
                     new string[] {
                     "1 - Place Order",
-                    "2 - Get Ticket Availability"
+                    "2 - Get Ticket Availability",
+                    "3 - Call Order Ticket from Internal API directly"
                 });
 
                 switch(result.KeyChar)
@@ -47,6 +48,11 @@ namespace TicketSales.MockClient
                         var tickets = await CallGetTickets();
                         break;
 
+                    case '3':
+                        var info = CreateTestTicketInformation();
+                        bool orderTicketResult = await CallOrderTicket(info);
+                        _consoleLogger.Log($"Order ticket result: {orderTicketResult}");
+                        break;
                 }
             }
         }
