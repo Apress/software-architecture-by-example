@@ -27,6 +27,8 @@ namespace TicketSales.Api.Controllers
         [HttpPost]        
         public async Task<bool> OrderTicket(TicketInformation ticketInformation)
         {
+            _logger.Log(LogLevel.Information, "OrderTicket");
+
             var client = _httpClientFactory.CreateClient();
                 
             HttpResponseMessage response = await client.PostAsync(
@@ -35,12 +37,5 @@ namespace TicketSales.Api.Controllers
 
             return (response.IsSuccessStatusCode);
         }
-
-        //[HttpPost]
-        //public async Task<string> GetTicketOrderStatus(string correlationId)
-        //{
-        //    //var message = await _queueHelper.GetMessageByCorrelationId(correlationId, );
-        //    //return message;
-        //}
     }
 }

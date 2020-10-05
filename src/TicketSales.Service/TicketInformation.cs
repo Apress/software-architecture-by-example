@@ -4,6 +4,8 @@ namespace TicketSales.Service
 {
     public class TicketInformation
     {
+        public string ClientId { get; set; }
+
         public string? EventCode { get; set; }
 
         public DateTime EventDate { get; set; }

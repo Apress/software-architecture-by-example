@@ -58,11 +58,13 @@ namespace TicketSales.Api
 
             app.UseRouting();
 
+            /*
             app.Use(next => context =>
             {
                 Console.WriteLine($"Found: {context.GetEndpoint()?.DisplayName}");
                 return next(context);
             });
+            */
 
             app.UseAuthorization();
 

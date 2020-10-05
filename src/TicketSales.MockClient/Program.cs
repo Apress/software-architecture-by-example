@@ -98,10 +98,11 @@ namespace TicketSales.MockClient
         private static TicketInformation CreateTestTicketInformation() =>        
             new TicketInformation()
             {
+                ClientId = "MockClient",
                 EventCode = "test",
                 EventDate = DateTime.Now.AddDays(30),
                 Price = 123,
-                Quantity = 1
+                Quantity = 1                
             };        
 
         private static async Task<string?> CallGetTickets()
@@ -122,12 +123,11 @@ namespace TicketSales.MockClient
 
         private static async Task<bool> CallOrderTicket(TicketInformation ticketInformation)
         {
-            var info = new StringContent(
-                JsonConvert.SerializeObject(ticketInformation), 
-                Encoding.UTF8,
-                "application/json");
+            var json = JsonConvert.SerializeObject(ticketInformation);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+
             HttpResponseMessage response = await client.PostAsync(
-                $"{_ticketSalesApiPath}/orderticket", info);
+                $"{_ticketSalesApiPath}/orderticket", data);
             return (response.IsSuccessStatusCode);
         }
 
