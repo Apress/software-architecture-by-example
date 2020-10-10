@@ -1,9 +1,8 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TicketSales.Api.Configuration;
-using TicketSales.ServiceBusHelper;
+using TicketSales.Common;
+using TicketSales.ThirdPartyProxy;
 
 namespace TicketSales.Api.Controllers
 {
@@ -11,17 +10,14 @@ namespace TicketSales.Api.Controllers
     [Route("[controller]/[action]")]
     public class TicketOrderController : ControllerBase
     {
-        private readonly ILogger<TicketOrderController> _logger;        
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ExternalBookingConfiguration _externalBookingConfiguration;
+        private readonly ILogger<TicketOrderController> _logger;
+        private readonly ITicketService _ticketService;                
 
         public TicketOrderController(ILogger<TicketOrderController> logger,
-            IHttpClientFactory httpClientFactory,
-            ExternalBookingConfiguration externalBookingConfiguration)
+            ITicketService ticketService)
         {
-            _logger = logger;            
-            _httpClientFactory = httpClientFactory;
-            _externalBookingConfiguration = externalBookingConfiguration;
+            _logger = logger;
+            _ticketService = ticketService;                        
         }
 
         [HttpPost]        
@@ -29,13 +25,8 @@ namespace TicketSales.Api.Controllers
         {
             _logger.Log(LogLevel.Information, "OrderTicket");
 
-            var client = _httpClientFactory.CreateClient();
-                
-            HttpResponseMessage response = await client.PostAsync(
-                $"{_externalBookingConfiguration.ExternalBookingEndpoint}/PurchaseTicket", 
-                new StringContent(string.Empty));
-
-            return (response.IsSuccessStatusCode);
+            bool isSuccess = await _ticketService.OrderTicket(ticketInformation);
+            return isSuccess;
         }
     }
 }

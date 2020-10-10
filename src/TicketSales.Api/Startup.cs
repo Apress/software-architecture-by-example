@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using TicketSales.Api.Configuration;
 using TicketSales.Common;
 using TicketSales.ServiceBusHelper;
+using TicketSales.ThirdPartyProxy;
 
 namespace TicketSales.Api
 {
@@ -31,9 +30,9 @@ namespace TicketSales.Api
                 QueueName = Configuration.GetValue<string>("ServiceBus:QueueName")
             });
 
-            services.AddSingleton<ExternalBookingConfiguration>((s) => new ExternalBookingConfiguration()
+            services.AddSingleton<TicketServiceConfiguration>((s) => new TicketServiceConfiguration()
             {
-                ExternalBookingEndpoint = Configuration.GetValue<string>("ExternalTicketBookingEndpoint")
+                Endpoint = Configuration.GetValue<string>("ExternalTicketBookingEndpoint")
             });
 
             services.AddScoped<IQueueHelper, QueueHelper>();
@@ -41,7 +40,8 @@ namespace TicketSales.Api
             services.AddScoped<ConsoleHelper>((a) =>
             {
                 return new ConsoleHelper("Api", ConsoleColor.White);
-            });
+            });            
+            services.AddScoped<ITicketService, TicketService>();
 
             services.AddHttpClient();
         }

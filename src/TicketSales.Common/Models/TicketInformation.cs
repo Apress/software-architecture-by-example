@@ -1,6 +1,6 @@
 using System;
 
-namespace TicketSales.Api
+namespace TicketSales.Common
 {
     public class TicketInformation
     {

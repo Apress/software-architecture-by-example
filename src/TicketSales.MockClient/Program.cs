@@ -18,6 +18,7 @@ namespace TicketSales.MockClient
     {
         static HttpClient client = new HttpClient();        
         static string _ticketSalesApiPath = "https://localhost:5101/ticketorder";
+        static string _ticketInventoryApiPath = "https://localhost:5101/ticketinventory";
         static Random _rnd = new Random();
         static ConsoleHelper _consoleHelper;
         static ConsoleLogger _consoleLogger;
@@ -107,7 +108,7 @@ namespace TicketSales.MockClient
 
         private static async Task<string?> CallGetTickets()
         {            
-            HttpResponseMessage response = await client.GetAsync($"{_ticketSalesApiPath}/GetTickets");
+            HttpResponseMessage response = await client.GetAsync(_ticketInventoryApiPath);
             if (response.IsSuccessStatusCode)
             {                                
                 var tickets = await GetAllTickets(response);

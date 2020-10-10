@@ -17,10 +17,6 @@ namespace TicketSales.ThirdPartyApi.Controllers
             100.50m, 260.65m, 540.10m
         };
 
-        public ExternalTicketBookingController()
-        {            
-        }
-
         [HttpGet]                
         public IEnumerable<TicketInformation> GetTickets()
         {            

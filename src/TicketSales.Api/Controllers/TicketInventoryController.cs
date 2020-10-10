@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using TicketSales.Api;
+using TicketSales.Common;
+using TicketSales.ThirdPartyProxy;
 
 namespace TicketSales.Api.Controllers
 {
@@ -11,16 +10,26 @@ namespace TicketSales.Api.Controllers
     [Route("[controller]")]
     public class TicketInventoryController
     {
-        [HttpGet]
-        public IEnumerable<TicketInformation> GetTickets()
+        private readonly ITicketService _ticketService;
+
+        public TicketInventoryController(ITicketService ticketService)
         {
-            return new List<TicketInformation>()
+            _ticketService = ticketService;
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<TicketInformation>> GetTickets()
+        {
+            var result = await _ticketService.GetTickets();
+            if (result.IsSuccess)
             {
-                new TicketInformation()
-                {
-                    EventCode = "test"
-                }
-            };
+                return result.Data;
+            }
+            else
+            {
+                // Log Error
+                return null;
+            }
         }
     }
 }

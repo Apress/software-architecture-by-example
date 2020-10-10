@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketSales.ServiceBusHelpe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketSales.Common", "TicketSales.Common\TicketSales.Common.csproj", "{6EFD231D-2D13-4727-B3C6-DCD40903E293}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketSales.Service", "TicketSales.Service\TicketSales.Service.csproj", "{D7D64AC6-A04D-4173-9E29-6655C6270934}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketSales.Service", "TicketSales.Service\TicketSales.Service.csproj", "{D7D64AC6-A04D-4173-9E29-6655C6270934}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketSales.ThirdPartyProxy", "TicketSales.ThirdPartyProxy\TicketSales.ThirdPartyProxy.csproj", "{5B9222C0-236C-421F-813B-C315D46C90CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,6 +104,18 @@ Global
 		{D7D64AC6-A04D-4173-9E29-6655C6270934}.Release|x64.Build.0 = Release|Any CPU
 		{D7D64AC6-A04D-4173-9E29-6655C6270934}.Release|x86.ActiveCfg = Release|Any CPU
 		{D7D64AC6-A04D-4173-9E29-6655C6270934}.Release|x86.Build.0 = Release|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Debug|x64.Build.0 = Debug|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Debug|x86.Build.0 = Debug|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Release|x64.ActiveCfg = Release|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Release|x64.Build.0 = Release|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Release|x86.ActiveCfg = Release|Any CPU
+		{5B9222C0-236C-421F-813B-C315D46C90CF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

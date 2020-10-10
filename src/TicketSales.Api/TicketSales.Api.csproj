@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TicketSales.ServiceBusHelper\TicketSales.ServiceBusHelper.csproj" />
+    <ProjectReference Include="..\TicketSales.ThirdPartyProxy\TicketSales.ThirdPartyProxy.csproj" />
   </ItemGroup>
 
 </Project>
