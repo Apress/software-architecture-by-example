@@ -49,7 +49,7 @@ namespace CashDesk.Client
                         break;
 
                     default:
-                        _persistData.Save(_cashDeskEventStream);
+                        _persistData.Save<DataCashDeskTransactionAddedEvent, CashDeskTransactionAddedEvent>(_cashDeskEventStream);
                         return;
                 }
             }            

@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace CashDesk.Server.Persistence
 {
-    public class PersistData<EventStreamBaseT> where EventStreamBaseT : EventStreamBase, new()
+    public class PersistData<TEventStreamBase> where TEventStreamBase : EventStreamBase, new()
     {
         private readonly IDataEventsPersistence _dataEvents;
 
@@ -18,7 +18,9 @@ namespace CashDesk.Server.Persistence
             _dataEvents = dataEvents;
         }
         
-        public void Save(EventStreamBaseT eventStream)
+        public void Save<TDataEvent, TEvent>(TEventStreamBase eventStream) 
+            where TDataEvent : IDataEvent, new()
+            where TEvent : IEvent
         {            
             var changes = eventStream.Changes;
             if (changes == null || !changes.Any())
@@ -26,15 +28,16 @@ namespace CashDesk.Server.Persistence
                 return;
             }
             
-            var dataStream = new List<DataCashDeskTransactionAddedEvent>();
+            var dataStream = new List<TDataEvent>();
             foreach (var change in changes)
             {
-                if (!((CashDeskTransactionAddedEvent)change).IsNew) continue;
+                var eventChange = (TEvent)change;
+                if (!eventChange.IsNew) continue;
 
-                var dataEvent = new DataCashDeskTransactionAddedEvent()
+                var dataEvent = new TDataEvent()
                 {
-                    Transaction = ((CashDeskTransactionAddedEvent)change).Transaction,
-                    EventType = typeof(DataCashDeskTransactionAddedEvent).AssemblyQualifiedName                    
+                    Transaction = eventChange.Transaction,
+                    EventType = typeof(TDataEvent).AssemblyQualifiedName                    
                 };
                 dataStream.Add(dataEvent);
             }
@@ -49,15 +52,15 @@ namespace CashDesk.Server.Persistence
             _dataEvents.Append(eventStream.StreamName, dataStreamSerialised);            
         }
 
-        public EventStreamBaseT Load(string streamName)
+        public TEventStreamBase Load(string streamName)
         {
             var dataEventsSerialised = _dataEvents.Read(streamName);
-            var dataEvents = new List<EventStreamBaseT>();
+            var dataEvents = new List<TEventStreamBase>();
 
             foreach (var dataEventSerialised in dataEventsSerialised)
             {
                 var dataEvent = JsonConvert.DeserializeObject<SaveChanges>(dataEventSerialised);
-                dataEvents.Add(new EventStreamBaseT()
+                dataEvents.Add(new TEventStreamBase()
                 {
                     Changes = dataEvent.Changes,
                     StreamName = dataEvent.StreamName
@@ -67,7 +70,7 @@ namespace CashDesk.Server.Persistence
             if (dataEvents == null || !dataEvents.Any() 
                 || (!dataEvents.Where(a => a?.Changes?.Any() ?? false)?.Any() ?? false))
             {
-                var newStream = new EventStreamBaseT()
+                var newStream = new TEventStreamBase()
                 {
                     StreamName = streamName
                 };
@@ -75,7 +78,7 @@ namespace CashDesk.Server.Persistence
                 return newStream;
             }
 
-            var eventStream = new EventStreamBaseT()
+            var eventStream = new TEventStreamBase()
             {
                 StreamName = dataEvents.First().StreamName
             };
@@ -88,13 +91,16 @@ namespace CashDesk.Server.Persistence
                     var eventType = obj["EventType"].Value<string>();
                     var type = Type.GetType(eventType);
 
-                    // https://www.pmichaels.net/tag/type-is-an-interface-or-abstract-class-and-cannot-be-instantiated/
-                    var settings = new JsonSerializerSettings();
-                    settings.Converters.Add(new CashDeskTransactionConverter());
+                    if (type == typeof(DataCashDeskTransactionAddedEvent))
+                    {
+                        // https://www.pmichaels.net/tag/type-is-an-interface-or-abstract-class-and-cannot-be-instantiated/
+                        var settings = new JsonSerializerSettings();
+                        settings.Converters.Add(new CashDeskTransactionConverter());
 
-                    var deserialisedObject = JsonConvert.DeserializeObject(eachEvent.ToString(), type, settings);
+                        var deserialisedObject = JsonConvert.DeserializeObject(eachEvent.ToString(), type, settings);
 
-                    eventStream.Apply(deserialisedObject);
+                        eventStream.Apply(deserialisedObject);                        
+                    }
                 }
             }
             return eventStream;

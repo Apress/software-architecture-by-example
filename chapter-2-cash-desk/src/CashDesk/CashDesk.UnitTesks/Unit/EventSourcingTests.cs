@@ -1,4 +1,5 @@
-﻿using CashDesk.Server.Persistence;
+﻿using CashDesk.Server.EventTypes;
+using CashDesk.Server.Persistence;
 using Newtonsoft.Json;
 using NSubstitute;
 using System;
@@ -91,7 +92,7 @@ namespace CashDesk.UnitTesks
             cashDesk.AddTransaction(new Server.Entities.CashDeskTransaction(new DateTime(2021, 02, 05), "NAIL1_8", "1.8mm NAILS (250)", 2.01m, "1"));
 
             // Act
-            dataPersistence.Save(cashDesk);
+            dataPersistence.Save<DataCashDeskTransactionAddedEvent, CashDeskTransactionAddedEvent>(cashDesk);
 
             // Assert
             dataEventsPersistence.Received(1).Append(Arg.Is<string>(streamName), Arg.Any<string>());

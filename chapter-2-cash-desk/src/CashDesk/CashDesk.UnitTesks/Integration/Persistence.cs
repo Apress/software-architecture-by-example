@@ -1,4 +1,5 @@
-﻿using CashDesk.Server.Persistence;
+﻿using CashDesk.Server.EventTypes;
+using CashDesk.Server.Persistence;
 using CashDesk.UnitTesks.Mocks;
 using NSubstitute;
 using System;
@@ -31,7 +32,7 @@ namespace CashDesk.UnitTesks.Integration
             var dataPersistence = new PersistData<CashDesk.Server.CashDeskEventStream>(dataEventsPersistence);
 
             // Act            
-            dataPersistence.Save(cashDeskStream);
+            dataPersistence.Save<DataCashDeskTransactionAddedEvent, CashDeskTransactionAddedEvent>(cashDeskStream);
             var result = dataPersistence.Load(streamName);
 
             // Assert
@@ -58,19 +59,19 @@ namespace CashDesk.UnitTesks.Integration
             var dataPersistence = new PersistData<CashDesk.Server.CashDeskEventStream>(dataEventsPersistence);
 
             // Act            
-            dataPersistence.Save(cashDeskStream);
+            dataPersistence.Save<DataCashDeskTransactionAddedEvent, CashDeskTransactionAddedEvent>(cashDeskStream);
             var result = dataPersistence.Load(streamName);
 
             cashDeskStream.AddTransaction(new Server.Entities.CashDeskTransaction(
                 new DateTime(2021, 05, 05), "NAIL", "Test", 5.12m, "1"));
 
-            dataPersistence.Save(cashDeskStream);
+            dataPersistence.Save<DataCashDeskTransactionAddedEvent, CashDeskTransactionAddedEvent>(cashDeskStream);
             result = dataPersistence.Load(streamName);
 
             cashDeskStream.AddTransaction(new Server.Entities.CashDeskTransaction(
                 new DateTime(2021, 05, 05), "SCREWDRIVER", "Test", 8.55m, "1"));
 
-            dataPersistence.Save(cashDeskStream);
+            dataPersistence.Save<DataCashDeskTransactionAddedEvent, CashDeskTransactionAddedEvent>(cashDeskStream);
             result = dataPersistence.Load(streamName);
 
             // Assert

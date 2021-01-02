@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CashDesk.Server.Persistence
 {
-    public class DataCashDeskTransactionAddedEvent : CashDeskTransactionAddedEvent
+    public class DataCashDeskTransactionAddedEvent : CashDeskTransactionAddedEvent, IDataEvent
     {
         public DataCashDeskTransactionAddedEvent() { }
 
