@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace CashDesk.DataPersistence
 {
@@ -37,7 +38,7 @@ namespace CashDesk.DataPersistence
                 returnList.Add(streamText);
             }
 
-            return returnList.ToArray();
+            return returnList.OrderBy(a => a).ToArray();
         }
     }
 }
