@@ -360,3 +360,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/chapter-4-social-media/src/SocialMedia/.idea/.idea.SocialMedia/.idea
