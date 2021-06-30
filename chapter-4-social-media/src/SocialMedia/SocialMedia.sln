@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialMedia.Client", "Socia
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialMedia.ProcessDataService", "SocialMedia.Transfer\SocialMedia.ProcessDataService.csproj", "{43B3320B-CB65-4701-A37B-9650356FD8F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMedia.Data.Mongo", "SocialMedia.Data.Mongo\SocialMedia.Data.Mongo.csproj", "{FE8F3381-C4CA-4290-865B-D717506A1E8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialMedia.Data.Mongo", "SocialMedia.Data.Mongo\SocialMedia.Data.Mongo.csproj", "{FE8F3381-C4CA-4290-865B-D717506A1E8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMedia.UpdateService", "SocialMedia.UpdateService\SocialMedia.UpdateService.csproj", "{1379E7F6-F83C-493C-B0F4-2B194EC68932}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{FE8F3381-C4CA-4290-865B-D717506A1E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE8F3381-C4CA-4290-865B-D717506A1E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE8F3381-C4CA-4290-865B-D717506A1E8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1379E7F6-F83C-493C-B0F4-2B194EC68932}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1379E7F6-F83C-493C-B0F4-2B194EC68932}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1379E7F6-F83C-493C-B0F4-2B194EC68932}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1379E7F6-F83C-493C-B0F4-2B194EC68932}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
