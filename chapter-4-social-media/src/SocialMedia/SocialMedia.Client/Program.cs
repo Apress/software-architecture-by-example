@@ -13,7 +13,7 @@ namespace SocialMedia.Client
         static readonly List<string> _posts = new List<string>();        
 
         static async Task Main(string[] args)
-        {
+        {            
             while (true)
             {
                 Console.WriteLine("Choose action");

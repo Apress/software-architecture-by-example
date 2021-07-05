@@ -37,9 +37,7 @@ namespace SocialMedia.Data.Mongo
             {
                 WorkoutDate = workoutDate,
                 Text = comment
-            };
-            var bson = newPost.ToBsonDocument();
-            var document = BsonDocument.Create(bson);            
+            };                   
 
             var collection = _db.GetCollection<Post>("Posts");
             await collection.InsertOneAsync(newPost);

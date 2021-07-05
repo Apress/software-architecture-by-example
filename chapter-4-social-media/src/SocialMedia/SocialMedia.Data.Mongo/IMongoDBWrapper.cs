@@ -11,5 +11,6 @@ namespace SocialMedia.Data.Mongo
         Task<string> CreatePost(DateTime workoutDate, string comment);
         Task<string> CreateComment(string comment, string postId);
         Task<Post> GetNextPost();
+        Task<Comment> GetNextComment(string postId);
     }
 }

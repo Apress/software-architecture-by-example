@@ -56,7 +56,7 @@ namespace SocialMedia.Transfer
         }
 
         private static async Task ReadComments(SqlTransaction transaction, SqlConnection connection, 
-            string postId, string filterPostId, MongoDBWrapper wrapper)
+            string postId, string filterPostId, IMongoDBWrapper wrapper)
         {
             while (true)
             {                

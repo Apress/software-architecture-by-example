@@ -11,20 +11,16 @@ namespace SocialMedia.UpdateService.Controllers
     [ApiController]
     [Route("[controller]")]
     public class PostController : ControllerBase
-    {
-        private readonly ILogger<PostController> _logger;
+    {        
+        private readonly IMongoDBWrapper _mongoDBWrapper;
 
-        public PostController(ILogger<PostController> logger)
-        {
-            _logger = logger;
+        public PostController(IMongoDBWrapper mongoDBWrapper)
+        {            
+            _mongoDBWrapper = mongoDBWrapper;
         }
       
         [HttpPost]
-        public async Task<string> Create()
-        {
-            var wrapper = new MongoDBWrapper();
-            var createPostResult = await wrapper.CreatePost(DateTime.Now, $"test post {DateTime.Now}");
-            return createPostResult;
-        }
+        public async Task<string> Create() =>        
+            await _mongoDBWrapper.CreatePost(DateTime.Now, $"test post {DateTime.Now}");                    
     }
 }

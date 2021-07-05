@@ -11,20 +11,17 @@ namespace SocialMedia.UpdateService.Controllers
     [ApiController]
     [Route("[controller]")]
     public class CommentController : ControllerBase
-    {        
-        private readonly ILogger<CommentController> _logger;
+    {
+        private readonly IMongoDBWrapper _mongoDBWrapper;
 
-        public CommentController(ILogger<CommentController> logger)
-        {
-            _logger = logger;
+        public CommentController(IMongoDBWrapper mongoDBWrapper)
+        {            
+            _mongoDBWrapper = mongoDBWrapper;
         }
 
         [HttpPost]
-        public async Task Create(string postId)
-        {
-            var wrapper = new MongoDBWrapper();
-            var createCommentResult = await wrapper.CreateComment($"test comment {DateTime.Now}", postId);
-        }
+        public async Task Create(string postId) =>        
+            await _mongoDBWrapper.CreateComment($"test comment {DateTime.Now}", postId);        
 
     }
 }
