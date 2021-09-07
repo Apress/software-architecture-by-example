@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Admin.CustomerRead\Admin.CustomerRead.csproj" />
+    <ProjectReference Include="..\Admin.CustomerUpdate\Admin.CustomerUpdate.csproj" />
+    <ProjectReference Include="..\Admin.Extensibility\Admin.Extensibility.csproj" />
+  </ItemGroup>
+
+</Project>
