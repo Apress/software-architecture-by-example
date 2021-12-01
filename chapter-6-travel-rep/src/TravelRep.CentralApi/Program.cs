@@ -4,6 +4,8 @@ Random _random = new Random();
 
 async Task ChaosMonkey()
 {
+    Console.WriteLine($"ChaosMonkey Invoked: {DateTime.Now}");
+
     int result = _random.Next(5);
     switch (result)
     {
@@ -38,6 +40,8 @@ app.UseHttpsRedirection();
 
 app.MapPost("/checkin", async (double longitude, double latitude) =>
 {
+    Console.Write($"/checkin called: {DateTime.Now}");
+
     await ChaosMonkey();
     return Results.Ok();
 });

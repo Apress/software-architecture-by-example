@@ -19,20 +19,26 @@ namespace TravelRep.Ambassador
         public async Task<bool> CallCheckin(double longitude, double latitude)
         {
             var result = await CallCentralSystemCheckin(longitude, latitude);
-            if (result.IsSuccessStatusCode) return true;
+            if (result) return true;
 
             BackgroundJob.Enqueue(() =>           
-                CallCentralSystemCheckin(longitude, latitude));
+                CallCentralSystemCheckinFireAndForget(longitude, latitude));
             return false;
         }
 
-        public async Task<HttpResponseMessage> CallCentralSystemCheckin(double longitude, double latitude)
+        public async Task CallCentralSystemCheckinFireAndForget(double longitude, double latitude)
+        {
+            var result = await CallCentralSystemCheckin(longitude, latitude);
+            if (result) throw new Exception("Unable to contact central system for checkin");
+        }
+
+        public async Task<bool> CallCentralSystemCheckin(double longitude, double latitude)
         {
             var client = _httpClientFactory.CreateClient();
             var content = new StringContent("");
             string query = $"?longitude={longitude}&latitude={latitude}";
             var result = await client.PostAsJsonAsync($"{_systemConfiguration.CentralSystem}/checkin{query}", content);
-            return result;
+            return result.IsSuccessStatusCode;
         }
     }
 

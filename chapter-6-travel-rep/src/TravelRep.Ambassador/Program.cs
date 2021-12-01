@@ -34,6 +34,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseHangfireDashboard();
 
 app.MapPost("/checkin", async (Location location, ICentralSystemProxyService centralSystemProxyService, IHttpClientFactory httpClientFactory) =>
 {    
