@@ -4,22 +4,26 @@ Random _random = new Random();
 
 async Task ChaosMonkey()
 {
-    Console.WriteLine($"ChaosMonkey Invoked: {DateTime.Now}");
+    Console.WriteLine($"\n\nChaosMonkey Invoked: {DateTime.Now}");
 
     int result = _random.Next(5);
     switch (result)
     {
         case 0:
+            Console.WriteLine($"Throw exception immediately");
             throw new Exception("Failure");
 
         case 1:
+            Console.WriteLine($"Wait, then throw exception");
             await Task.Delay(3000);
             throw new Exception("Failure");
 
         case 2:
+            Console.WriteLine($"Wait, then work");
             await Task.Delay(3000);
             break;
-    }    
+    }
+    Console.WriteLine("Call succeeded");
 }
 
 // Add services to the container.
@@ -40,7 +44,7 @@ app.UseHttpsRedirection();
 
 app.MapPost("/checkin", async (double longitude, double latitude) =>
 {
-    Console.Write($"/checkin called: {DateTime.Now}");
+    Console.Write($"\n\n/checkin called: {DateTime.Now}\n\n\n");
 
     await ChaosMonkey();
     return Results.Ok();

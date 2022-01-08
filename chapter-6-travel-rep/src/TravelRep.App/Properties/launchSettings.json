@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TravelRep.App": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

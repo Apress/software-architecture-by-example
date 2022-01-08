@@ -1,0 +1,17 @@
+version: '3'
+services:
+  ambassador-api:
+    build: .\TravelRep.Ambassador
+    ports: 
+      - "5010:80"      
+    logging: 
+      driver: "json-file"
+
+      
+  main-app:
+    build: .\TravelRep.App 
+    stdin_open: true
+    tty: true    
+    depends_on: 
+      - "ambassador-api"
+      
