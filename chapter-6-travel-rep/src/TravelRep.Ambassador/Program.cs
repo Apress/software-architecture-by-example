@@ -1,4 +1,5 @@
 using Hangfire;
+using Hangfire.Dashboard;
 using Hangfire.LiteDB;
 using TravelRep.Ambassador;
 
@@ -14,6 +15,7 @@ builder.Services.AddLogging();
 builder.Services.AddHangfire(configuration =>
 {
     configuration.UseLiteDbStorage("./hf.db");
+    
 });
 builder.Services.AddHangfireServer();
 
@@ -35,7 +37,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseHangfireDashboard();
+
+var options = new DashboardOptions()
+{
+    Authorization = new[] { new AuthorizationFilter() }
+};
+app.UseHangfireDashboard("/hangfire", options);
 
 app.MapPost("/checkin", async (Location location, ICentralSystemProxyService centralSystemProxyService, IHttpClientFactory httpClientFactory) =>
 {    
@@ -45,3 +52,8 @@ app.MapPost("/checkin", async (Location location, ICentralSystemProxyService cen
 });
 
 app.Run();
+
+public class AuthorizationFilter : IDashboardAuthorizationFilter
+{
+    public bool Authorize(DashboardContext context) => true;
+}
