@@ -1,7 +1,9 @@
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.LiteDB;
+using Microsoft.AspNetCore.Mvc;
 using TravelRep.Ambassador;
+using TravelRep.Ambassador.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +26,6 @@ var config = new SystemConfiguration()
     CentralSystem = builder.Configuration["CentralSystemUrl"]
 };
 builder.Services.AddSingleton<SystemConfiguration>(config);
-
 builder.Services.AddSingleton<ICentralSystemProxyService, CentralSystemProxyService>();
 
 var app = builder.Build();
@@ -44,9 +45,27 @@ var options = new DashboardOptions()
 };
 app.UseHangfireDashboard("/hangfire", options);
 
-app.MapPost("/checkin", async (Location location, ICentralSystemProxyService centralSystemProxyService, IHttpClientFactory httpClientFactory) =>
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+app.MapPost("/checkin", async ([FromBody]Location location, ICentralSystemProxyService centralSystemProxyService, IHttpClientFactory httpClientFactory) =>
 {    
     var result = await centralSystemProxyService.CallCheckin(location.Longitude, location.Latitude);
+    if (result) return Results.Ok();
+    return Results.Accepted();
+});
+app.MapPost("/cancellation", async ([FromBody]Cancellation cancellation, ICentralSystemProxyService centralSystemProxyService, IHttpClientFactory httpClientFactory) =>
+{    
+    if (string.IsNullOrWhiteSpace(cancellation.Report)) return Results.BadRequest(cancellation);   
+
+    var result = await centralSystemProxyService.CallCancellation(cancellation.Report, cancellation.FlightNumber);
+    if (result) return Results.Ok();
+    return Results.Accepted();
+});
+app.MapPost("/complaint", async ([FromBody] Complaint complaint, ICentralSystemProxyService centralSystemProxyService, IHttpClientFactory httpClientFactory) =>
+{
+    if (string.IsNullOrWhiteSpace(complaint.Text)) return Results.BadRequest(complaint);
+
+    var result = await centralSystemProxyService.CallComplaint(complaint.Text);
     if (result) return Results.Ok();
     return Results.Accepted();
 });

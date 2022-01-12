@@ -1,4 +1,4 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Mvc;
 
 Random _random = new Random();
 
@@ -26,6 +26,8 @@ async Task ChaosMonkey()
     Console.WriteLine("Call succeeded");
 }
 
+var builder = WebApplication.CreateBuilder(args);
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -50,13 +52,13 @@ app.MapPost("/checkin", async (double longitude, double latitude) =>
     return Results.Ok();
 });
 
-app.MapPost("/cancellation", async (string report, int flightNumber) =>
+app.MapPost("/cancellation", async ([FromBody]string report, int flightNumber) =>
 {
     await ChaosMonkey();
     return Results.Ok();
 });
 
-app.MapPost("/complaint", async (string complaint) =>
+app.MapPost("/complaint", async ([FromBody]string complaint) =>
 {
     await ChaosMonkey();
     return Results.Ok();

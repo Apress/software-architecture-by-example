@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace TravelRep.App
 {
-    public record Location
+    public record Complaint
     {
-        public double Longitude;
-        public double Latitude;
+        public string? Text { get; set; }
     }
 }

@@ -1,8 +1,8 @@
-﻿namespace TravelRep.Ambassador
+﻿namespace TravelRep.Ambassador.Models
 {
     public record Location
     {
-        public double Longitude;
-        public double Latitude;
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
     }
 }

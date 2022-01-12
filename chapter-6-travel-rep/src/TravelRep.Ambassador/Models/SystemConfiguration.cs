@@ -1,7 +1,7 @@
-﻿namespace TravelRep.Ambassador
+﻿namespace TravelRep.Ambassador.Models
 {
     public class SystemConfiguration
     {
-        public string CentralSystem { get; set; }
+        public string? CentralSystem { get; set; }
     }
 }

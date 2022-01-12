@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using TravelRep.Ambassador.Models;
 
 namespace TravelRep.Ambassador
 {
@@ -61,10 +62,58 @@ namespace TravelRep.Ambassador
                 return false;
             }
         }
+
+        public async Task<bool> CallCancellation(string report, int flightNumber)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                var content = new StringContent(report);
+                string query = $"?flightNumber={flightNumber}";
+                var result = await client.PostAsJsonAsync($"{_systemConfiguration.CentralSystem}/cancellation{query}", content);
+                if (result.IsSuccessStatusCode) return true;
+
+                var results = await result.Content.ReadAsStringAsync();
+                _logger.LogWarning("Call failed:");
+                _logger.LogWarning(results);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return false;
+            }
+
+        }
+
+        public async Task<bool> CallComplaint(string complaintText)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
+                var content = new StringContent(complaintText);                
+                var result = await client.PostAsJsonAsync($"{_systemConfiguration.CentralSystem}/complaint", content);
+                if (result.IsSuccessStatusCode) return true;
+
+                var results = await result.Content.ReadAsStringAsync();
+                _logger.LogWarning("Call failed:");
+                _logger.LogWarning(results);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return false;
+            }
+
+
+        }
     }
 
     public interface ICentralSystemProxyService
     {
+        Task<bool> CallCancellation(string report, int flightNumber);
         Task<bool> CallCheckin(double longitude, double latitude);
+        Task<bool> CallComplaint(string complaintText);
     }
 }
